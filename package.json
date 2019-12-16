@@ -1,0 +1,69 @@
+{
+  "name": "big-number-input",
+  "version": "0.0.0",
+  "description": "A BigNumberInput to use with decentralized applications and React",
+  "main": "lib/index.js",
+  "files": [
+    "lib/index.js",
+    "lib/index.d.ts"
+  ],
+  "types": "./lib/index.d.ts",
+  "scripts": {
+    "build": "tsc -p .",
+    "start": "npm run build -- -w",
+    "test": "jest",
+    "test:watch": "jest --watch",
+    "lint": "npm run eslint:fix && npm run prettier-check",
+    "eslint:fix": "eslint --fix . --ext .ts",
+    "prettier": "prettier --write \"**/*.{ts,tsx,json}\"",
+    "prettier-check": "prettier --check \"**/*.{ts,tsx,json}\""
+  },
+  "peerDependencies": {
+    "react": ">=16.0.0",
+    "react-dom": ">=16.0.0"
+  },
+  "devDependencies": {
+    "@types/react": "^16.9.2",
+    "@testing-library/jest-dom": "^4.2.4",
+    "@testing-library/react": "^9.4.0",
+    "@types/jest": "^24.0.23",
+    "@typescript-eslint/eslint-plugin": "^2.4.0",
+    "@typescript-eslint/parser": "^2.4.0",
+    "eslint": "^6.5.1",
+    "eslint-config-prettier": "^6.4.0",
+    "eslint-plugin-implicit-dependencies": "^1.0.4",
+    "husky": "^3.0.4",
+    "jest": "^24.9.0",
+    "ts-jest": "^24.2.0",
+    "ethers": "^4.0.40",
+    "prettier": "^1.16.4",
+    "react": "^16.9.0",
+    "react-dom": "^16.12.0",
+    "styled-components": "^4.4.1",
+    "typescript": "^3.7.3"
+  },
+  "homepage": "https://github.com/mariano-aguero/big-number-input",
+  "license": {
+    "type": "MIT",
+    "url": "https://github.com/mariano-aguero/big-number-input/blob/master/LICENSE"
+  },
+  "author": {
+    "name": "Mariano Aguero",
+    "email": "mariano.aguero@gmail.com"
+  },
+  "husky": {
+    "hooks": {
+      "pre-commit": "npm run lint && npm run build",
+      "pre-push": "npm test"
+    }
+  },
+  "keywords": [
+    "ethereum",
+    "blockchain",
+    "react",
+    "big",
+    "bigNumber",
+    "input",
+    "bigNumberInput"
+  ]
+}
