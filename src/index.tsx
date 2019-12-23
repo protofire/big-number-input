@@ -18,7 +18,7 @@ export const BigNumberInput = (props: BigNumberInputProps) => {
   const {
     placeholder = '0.00',
     autofocus = false,
-    value = null,
+    value,
     decimals,
     step,
     min,
@@ -33,9 +33,7 @@ export const BigNumberInput = (props: BigNumberInputProps) => {
   const inputRef = React.useRef<HTMLInputElement>(null)
 
   React.useEffect(() => {
-    if (!value) {
-      setCurrentValue('')
-    } else if (value && !parseUnits(currentValue || '0', decimals).eq(value)) {
+    if (!parseUnits(currentValue || '0', decimals).eq(value)) {
       setCurrentValue(formatUnits(value, decimals))
     }
   }, [value, decimals, currentValue])
@@ -50,18 +48,14 @@ export const BigNumberInput = (props: BigNumberInputProps) => {
   const updateValue = (event: React.ChangeEvent<HTMLInputElement>) => {
     const { value } = event.currentTarget
 
-    if (!value) {
-      onChange(new BigNumber(0))
-    } else {
-      const newValue = parseUnits(value, decimals)
-      const invalidValue = (min && newValue.lt(min)) || (max && newValue.gt(max))
+    const newValue = parseUnits(value, decimals)
+    const invalidValue = (min && newValue.lt(min)) || (max && newValue.gt(max))
 
-      if (invalidValue) {
-        return
-      }
-
-      onChange(newValue)
+    if (invalidValue) {
+      return
     }
+
+    onChange(newValue)
 
     setCurrentValue(value)
   }
