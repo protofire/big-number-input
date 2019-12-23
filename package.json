@@ -40,11 +40,15 @@
     "ts-jest": "^24.2.0",
     "typescript": "^3.7.3"
   },
-  "homepage": "https://github.com/mariano-aguero/big-number-input",
+  "homepage": "https://github.com/protofire/big-number-input",
   "license": {
     "type": "MIT",
-    "url": "https://github.com/mariano-aguero/big-number-input/blob/master/LICENSE"
+    "url": "https://github.com/protofire/big-number-input/blob/master/LICENSE"
   },
+  "contributors": [
+    "Franco Victorio",
+    "Mariano Agüero"
+  ],
   "author": {
     "name": "Mariano Aguero",
     "email": "mariano.aguero@gmail.com"
