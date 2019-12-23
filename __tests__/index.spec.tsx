@@ -70,7 +70,6 @@ test('should allow entering an empty string', async () => {
   const changeHandler = jest.fn().mockImplementation(() => {
     console.log('changeHandler mock triggered')
   })
-  const expectedValue = new BigNumber('0')
 
   // when
   const { container } = renderBigNumberInput({ onChange: changeHandler })
@@ -80,7 +79,7 @@ test('should allow entering an empty string', async () => {
   expect(input).not.toBe(null)
   fireEvent.change(input, { target: { value: '' } })
   expect(changeHandler).toHaveBeenCalledTimes(1)
-  expect(changeHandler).toHaveBeenCalledWith(expectedValue)
+  expect(changeHandler).toHaveBeenCalledWith(null)
 })
 
 test('should accept a min value', async () => {

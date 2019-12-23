@@ -36,7 +36,7 @@ function App() {
   return (
     <div>
       <BigNumberInput decimals={6} onChange={setValue} value={value} />
-      <div>{value.toString()}</div>
+      <div>{value ? value.toString() : 'empty'}</div>
     </div>
   );
 }
@@ -46,9 +46,9 @@ export default App;
 
 The required props are:
 
-- `decimals`: The number of decimals you want to use
+- `decimals`: The number of decimals you want to use, or `null` if you want the input to start empty
 - `value`: The BigNumber value that will be used by the input
-- `onChange`: A function that receives the new BigNumber value
+- `onChange`: A function that receives the new BigNumber value, or `null` when the input is empty
 
 Then you have a bunch of optional props you can use:
 

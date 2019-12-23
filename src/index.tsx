@@ -3,8 +3,8 @@ import { BigNumber, formatUnits, parseUnits } from 'ethers/utils'
 
 export interface BigNumberInputProps {
   decimals: number
-  onChange: (value: BigNumber) => void
-  value: BigNumber
+  onChange: (value: BigNumber | null) => void
+  value: BigNumber | null
   autofocus?: boolean
   className?: string
   placeholder?: string
@@ -33,7 +33,9 @@ export const BigNumberInput = (props: BigNumberInputProps) => {
   const inputRef = React.useRef<HTMLInputElement>(null)
 
   React.useEffect(() => {
-    if (!parseUnits(currentValue || '0', decimals).eq(value)) {
+    if (!value) {
+      setCurrentValue('')
+    } else if (!parseUnits(currentValue || '0', decimals).eq(value)) {
       setCurrentValue(formatUnits(value, decimals))
     }
   }, [value, decimals, currentValue])
@@ -47,6 +49,12 @@ export const BigNumberInput = (props: BigNumberInputProps) => {
 
   const updateValue = (event: React.ChangeEvent<HTMLInputElement>) => {
     const { value } = event.currentTarget
+
+    if (!value) {
+      onChange(null)
+      setCurrentValue('')
+      return
+    }
 
     const newValue = parseUnits(value, decimals)
     const invalidValue = (min && newValue.lt(min)) || (max && newValue.gt(max))
