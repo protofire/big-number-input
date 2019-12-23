@@ -4,8 +4,7 @@
   "description": "A BigNumberInput to use with decentralized applications and React",
   "main": "lib/index.js",
   "files": [
-    "lib/index.js",
-    "lib/index.d.ts"
+    "/lib/**/*"
   ],
   "types": "./lib/index.d.ts",
   "scripts": {
@@ -16,7 +15,8 @@
     "lint": "npm run eslint:fix && npm run prettier-check",
     "eslint:fix": "eslint --fix . --ext .ts",
     "prettier": "prettier --write \"**/*.{ts,tsx,json}\"",
-    "prettier-check": "prettier --check \"**/*.{ts,tsx,json}\""
+    "prettier-check": "prettier --check \"**/*.{ts,tsx,json}\"",
+    "prepublish": "npm run build"
   },
   "peerDependencies": {
     "react": ">=16.8.0",

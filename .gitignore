@@ -3,3 +3,4 @@ node_modules
 .vscode
 *-debug.log
 *-error.log
+lib/
