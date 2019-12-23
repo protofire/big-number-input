@@ -1,47 +1,25 @@
 import * as React from 'react'
-import styled from 'styled-components'
-import { ethers } from 'ethers'
-import { BigNumber } from 'ethers/utils'
-
-export interface BigNumberInputReturn {
-  name: string
-  value: BigNumber
-}
+import { BigNumber, formatUnits, parseUnits } from 'ethers/utils'
 
 export interface BigNumberInputProps {
   decimals: number
-  name: string
+  onChange: (value: BigNumber | null) => void
+  value: BigNumber | null
   autofocus?: boolean
   className?: string
   placeholder?: string
   max?: BigNumber
   min?: BigNumber
-  onChange: (value: BigNumberInputReturn) => void
   step?: BigNumber
-  value?: BigNumber
   disabled?: boolean
 }
-
-const Input = styled.input`
-  ::-webkit-inner-spin-button,
-  ::-webkit-outer-spin-button {
-    -webkit-appearance: none;
-    margin: 0;
-  }
-  -moz-appearance: textfield;
-
-  &:focus {
-    outline: none;
-  }
-`
 
 export const BigNumberInput = (props: BigNumberInputProps) => {
   const {
     placeholder = '0.00',
     autofocus = false,
-    value = null,
+    value,
     decimals,
-    name,
     step,
     min,
     max,
@@ -57,8 +35,8 @@ export const BigNumberInput = (props: BigNumberInputProps) => {
   React.useEffect(() => {
     if (!value) {
       setCurrentValue('')
-    } else if (value && !ethers.utils.parseUnits(currentValue || '0', decimals).eq(value)) {
-      setCurrentValue(ethers.utils.formatUnits(value, decimals))
+    } else if (!parseUnits(currentValue || '0', decimals).eq(value)) {
+      setCurrentValue(formatUnits(value, decimals))
     }
   }, [value, decimals, currentValue])
 
@@ -70,31 +48,32 @@ export const BigNumberInput = (props: BigNumberInputProps) => {
   }, [autofocus, inputRef])
 
   const updateValue = (event: React.ChangeEvent<HTMLInputElement>) => {
-    const { name, value } = event.currentTarget
+    const { value } = event.currentTarget
 
     if (!value) {
-      onChange({ name, value: new BigNumber(0) })
-    } else {
-      const newValue = ethers.utils.parseUnits(value, decimals)
-      const invalidValue = (min && newValue.lt(min)) || (max && newValue.gt(max))
-
-      if (invalidValue) {
-        return
-      }
-
-      onChange({ name, value: newValue })
+      onChange(null)
+      setCurrentValue('')
+      return
     }
+
+    const newValue = parseUnits(value, decimals)
+    const invalidValue = (min && newValue.lt(min)) || (max && newValue.gt(max))
+
+    if (invalidValue) {
+      return
+    }
+
+    onChange(newValue)
 
     setCurrentValue(value)
   }
 
-  const currentStep = step && ethers.utils.formatUnits(step, decimals)
-  const currentMin = min && ethers.utils.formatUnits(min, decimals)
-  const currentMax = max && ethers.utils.formatUnits(max, decimals)
+  const currentStep = step && formatUnits(step, decimals)
+  const currentMin = min && formatUnits(min, decimals)
+  const currentMax = max && formatUnits(max, decimals)
 
   return (
-    <Input
-      data-testid={name}
+    <input
       className={className}
       max={currentMax}
       min={currentMin}
@@ -102,7 +81,6 @@ export const BigNumberInput = (props: BigNumberInputProps) => {
       ref={inputRef}
       step={currentStep}
       type={'number'}
-      name={name}
       value={currentValue}
       placeholder={placeholder}
       disabled={disabled}

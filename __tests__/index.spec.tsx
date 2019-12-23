@@ -8,7 +8,7 @@ import { BigNumberInput } from '../src/index'
 
 const noop = () => ({})
 
-const defaultProps = { name: 'test', value: new BigNumber('123'), decimals: 2 }
+const defaultProps = { value: new BigNumber('123'), decimals: 2 }
 
 const renderBigNumberInput = props => render(<BigNumberInput {...defaultProps} {...props} />)
 
@@ -22,8 +22,8 @@ test('should be initialized with value', () => {
   const expectedValue = '1.23'
 
   // when
-  const { getByTestId } = renderBigNumberInput({ onChange: noop })
-  const input: any = getByTestId(defaultProps.name)
+  const { container } = renderBigNumberInput({ onChange: noop })
+  const input: any = container.querySelector(`input`)
 
   // then
   expect(input.value).toBe(expectedValue)
@@ -38,13 +38,13 @@ test('should trigger the onChange callback with the proper value', async () => {
 
   // when
   const { container } = renderBigNumberInput({ onChange: changeHandler })
-  const input: any = container.querySelector(`input[name="${defaultProps.name}"]`)
+  const input: any = container.querySelector(`input`)
 
   // then
   expect(input).not.toBe(null)
   fireEvent.change(input, { target: { value: '2.30' } })
   expect(changeHandler).toHaveBeenCalledTimes(1)
-  expect(changeHandler).toHaveBeenCalledWith({ name: defaultProps.name, value: expectedValue })
+  expect(changeHandler).toHaveBeenCalledWith(expectedValue)
 })
 
 test('should change when value changes', async () => {
@@ -70,17 +70,16 @@ test('should allow entering an empty string', async () => {
   const changeHandler = jest.fn().mockImplementation(() => {
     console.log('changeHandler mock triggered')
   })
-  const expectedValue = new BigNumber('0')
 
   // when
   const { container } = renderBigNumberInput({ onChange: changeHandler })
-  const input: any = container.querySelector(`input[name="${defaultProps.name}"]`)
+  const input: any = container.querySelector(`input`)
 
   // then
   expect(input).not.toBe(null)
   fireEvent.change(input, { target: { value: '' } })
   expect(changeHandler).toHaveBeenCalledTimes(1)
-  expect(changeHandler).toHaveBeenCalledWith({ name: defaultProps.name, value: expectedValue })
+  expect(changeHandler).toHaveBeenCalledWith(null)
 })
 
 test('should accept a min value', async () => {
@@ -93,7 +92,7 @@ test('should accept a min value', async () => {
 
   // when
   const { container } = renderBigNumberInput({ min: minValue, onChange: changeHandler })
-  const input: any = container.querySelector(`input[name="${defaultProps.name}"]`)
+  const input: any = container.querySelector(`input`)
 
   // then
   expect(input).not.toBe(null)
@@ -112,7 +111,7 @@ test('should accept a max value', async () => {
 
   // when
   const { container } = renderBigNumberInput({ max: maxValue, onChange: changeHandler })
-  const input: any = container.querySelector(`input[name="${defaultProps.name}"]`)
+  const input: any = container.querySelector(`input`)
 
   // then
   expect(input).not.toBe(null)
