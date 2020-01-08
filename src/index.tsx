@@ -3,34 +3,37 @@ import { BigNumber, formatUnits, parseUnits } from 'ethers/utils'
 
 export interface BigNumberInputProps {
   decimals: number
-  onChange: (value: BigNumber | null) => void
   value: BigNumber | null
+  onChange: (value: BigNumber | null) => void
+  renderInput: (props: BigNumberRenderProps) => React.ReactElement
   autofocus?: boolean
-  className?: string
   placeholder?: string
   max?: BigNumber
   min?: BigNumber
   step?: BigNumber
-  disabled?: boolean
 }
 
-export const BigNumberInput = (props: BigNumberInputProps) => {
-  const {
-    placeholder = '0.00',
-    autofocus = false,
-    value,
-    decimals,
-    step,
-    min,
-    max,
-    className,
-    disabled = false,
-    onChange,
-  } = props
+export interface BigNumberRenderProps {
+  placeholder: string
+  onChange: (event: React.ChangeEvent<HTMLInputElement>) => void
+  value: string
+  type: string
+  max?: string | undefined
+  min?: string | undefined
+  step?: string | undefined
+}
 
+export const BigNumberInput = ({
+  decimals,
+  value,
+  onChange,
+  renderInput,
+  placeholder = '0.00',
+  max,
+  min,
+  step,
+}: BigNumberInputProps) => {
   const [currentValue, setCurrentValue] = React.useState('')
-
-  const inputRef = React.useRef<HTMLInputElement>(null)
 
   React.useEffect(() => {
     if (!value) {
@@ -39,13 +42,6 @@ export const BigNumberInput = (props: BigNumberInputProps) => {
       setCurrentValue(formatUnits(value, decimals))
     }
   }, [value, decimals, currentValue])
-
-  React.useEffect(() => {
-    if (autofocus && inputRef) {
-      const node = inputRef.current as HTMLInputElement
-      node.focus()
-    }
-  }, [autofocus, inputRef])
 
   const updateValue = (event: React.ChangeEvent<HTMLInputElement>) => {
     const { value } = event.currentTarget
@@ -72,18 +68,13 @@ export const BigNumberInput = (props: BigNumberInputProps) => {
   const currentMin = min && formatUnits(min, decimals)
   const currentMax = max && formatUnits(max, decimals)
 
-  return (
-    <input
-      className={className}
-      max={currentMax}
-      min={currentMin}
-      onChange={updateValue}
-      ref={inputRef}
-      step={currentStep}
-      type={'number'}
-      value={currentValue}
-      placeholder={placeholder}
-      disabled={disabled}
-    />
-  )
+  return renderInput({
+    placeholder,
+    onChange: updateValue,
+    value: currentValue,
+    max: currentMax,
+    min: currentMin,
+    step: currentStep,
+    type: 'number',
+  })
 }

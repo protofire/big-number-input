@@ -4,11 +4,15 @@ import { render, fireEvent } from '@testing-library/react'
 import { BigNumber } from 'ethers/utils'
 import React from 'react'
 
-import { BigNumberInput } from '../src/index'
+import { BigNumberInput, BigNumberRenderProps } from '../src/index'
 
 const noop = () => ({})
 
-const defaultProps = { value: new BigNumber('123'), decimals: 2 }
+const defaultProps = {
+  value: new BigNumber('123'),
+  decimals: 2,
+  renderInput: (props: BigNumberRenderProps) => <input {...props} />,
+}
 
 const renderBigNumberInput = props => render(<BigNumberInput {...defaultProps} {...props} />)
 

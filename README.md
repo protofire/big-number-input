@@ -26,22 +26,26 @@ npm install big-number-input
 Import the component and pass the required props:
 
 ```typescript
-import React from 'react';
+import React from 'react'
 import { BigNumberInput } from 'big-number-input'
 import { BigNumber } from 'ethers/utils'
-
 
 function App() {
   const [value, setValue] = React.useState(new BigNumber(0))
   return (
     <div>
-      <BigNumberInput decimals={6} onChange={setValue} value={value} />
+      <BigNumberInput
+        decimals={6}
+        onChange={setValue}
+        value={value}
+        renderInput={(props: BigNumberRenderProps) => <input {...props} />}
+      />
       <div>{value ? value.toString() : 'empty'}</div>
     </div>
-  );
+  )
 }
 
-export default App;
+export default App
 ```
 
 The required props are:
