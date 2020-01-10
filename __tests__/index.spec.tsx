@@ -35,9 +35,7 @@ test('should be initialized with value', () => {
 
 test('should trigger the onChange callback with the proper value', async () => {
   // given
-  const changeHandler = jest.fn().mockImplementation(() => {
-    console.log('changeHandler mock triggered')
-  })
+  const changeHandler = jest.fn()
   const expectedValue = new BigNumber('230')
 
   // when
@@ -52,9 +50,7 @@ test('should trigger the onChange callback with the proper value', async () => {
 })
 
 test('should change when value changes', async () => {
-  const changeHandler = jest.fn().mockImplementation(() => {
-    console.log('changeHandler mock triggered')
-  })
+  const changeHandler = jest.fn()
 
   const firstChildOne = renderBigNumberInput({
     value: new BigNumber('123'),
@@ -71,9 +67,7 @@ test('should change when value changes', async () => {
 
 test('should allow entering an empty string', async () => {
   // given
-  const changeHandler = jest.fn().mockImplementation(() => {
-    console.log('changeHandler mock triggered')
-  })
+  const changeHandler = jest.fn()
 
   // when
   const { container } = renderBigNumberInput({ onChange: changeHandler })
@@ -88,9 +82,7 @@ test('should allow entering an empty string', async () => {
 
 test('should accept a min value', async () => {
   // given
-  const changeHandler = jest.fn().mockImplementation(() => {
-    console.log('changeHandler mock triggered')
-  })
+  const changeHandler = jest.fn()
   const minValue = new BigNumber('100')
   const expectedValue = '1.23'
 
@@ -107,9 +99,7 @@ test('should accept a min value', async () => {
 
 test('should accept a max value', async () => {
   // given
-  const changeHandler = jest.fn().mockImplementation(() => {
-    console.log('changeHandler mock triggered')
-  })
+  const changeHandler = jest.fn()
   const maxValue = new BigNumber('200')
   const expectedValue = '1.23'
 
@@ -125,9 +115,7 @@ test('should accept a max value', async () => {
 })
 
 test('should allow initialize with an empty string', async () => {
-  const changeHandler = jest.fn().mockImplementation(() => {
-    console.log('changeHandler mock triggered')
-  })
+  const changeHandler = jest.fn()
 
   const firstChild = renderBigNumberInput({ value: null, onChange: changeHandler }).container
     .firstChild

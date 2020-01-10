@@ -5,7 +5,7 @@ export interface BigNumberInputProps {
   decimals: number
   value: BigNumber | null
   onChange: (value: BigNumber | null) => void
-  renderInput: (props: BigNumberRenderProps) => React.ReactElement
+  renderInput?: (props: React.HTMLProps<HTMLInputElement>) => React.ReactElement
   autofocus?: boolean
   placeholder?: string
   max?: BigNumber
@@ -13,21 +13,12 @@ export interface BigNumberInputProps {
   step?: BigNumber
 }
 
-export interface BigNumberRenderProps {
-  placeholder: string
-  onChange: (event: React.ChangeEvent<HTMLInputElement>) => void
-  value: string
-  type: string
-  max?: string | undefined
-  min?: string | undefined
-  step?: string | undefined
-}
-
 export const BigNumberInput = ({
   decimals,
   value,
   onChange,
-  renderInput,
+  renderInput = props => <input {...props} />,
+  autofocus,
   placeholder = '0.00',
   max,
   min,
@@ -35,6 +26,9 @@ export const BigNumberInput = ({
 }: BigNumberInputProps) => {
   const [currentValue, setCurrentValue] = React.useState('')
 
+  const inputRef = React.useRef<any>(null)
+
+  // update current value
   React.useEffect(() => {
     if (!value) {
       setCurrentValue('')
@@ -42,6 +36,14 @@ export const BigNumberInput = ({
       setCurrentValue(formatUnits(value, decimals))
     }
   }, [value, decimals, currentValue])
+
+  // autofocus
+  React.useEffect(() => {
+    if (autofocus && inputRef) {
+      const node = inputRef.current as HTMLInputElement
+      node.focus()
+    }
+  }, [autofocus, inputRef])
 
   const updateValue = (event: React.ChangeEvent<HTMLInputElement>) => {
     const { value } = event.currentTarget
@@ -76,5 +78,6 @@ export const BigNumberInput = ({
     min: currentMin,
     step: currentStep,
     type: 'number',
+    ref: inputRef,
   })
 }

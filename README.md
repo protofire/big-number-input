@@ -32,13 +32,13 @@ import { BigNumber } from 'ethers/utils'
 
 function App() {
   const [value, setValue] = React.useState(new BigNumber(0))
+
   return (
     <div>
       <BigNumberInput
         decimals={6}
         onChange={setValue}
         value={value}
-        renderInput={(props: BigNumberRenderProps) => <input {...props} />}
       />
       <div>{value ? value.toString() : 'empty'}</div>
     </div>
@@ -62,3 +62,29 @@ Then you have a bunch of optional props you can use:
 - `min`, `max` and `step`: The min and max values you want to use and the step used when you increase or decrease the
   number with the arrow keys or by clicking the arrows in the input. These values are also BigNumbers and are
   interpreted with the same number of decimals as the main value.
+
+### Using a different input component
+
+If you want to use a different input, for example the `Input` from [Material UI](https://material-ui.com/), you can use
+the `renderInput` prop:
+
+```typescript
+import React from 'react';
+import { BigNumberInput } from 'big-number-input'
+import { BigNumber } from 'ethers/utils'
+import { Input } from '@material-ui/core'
+
+
+function App() {
+  const [value, setValue] = React.useState(new BigNumber(0))
+
+  return (
+    <div>
+      <BigNumberInput decimals={6} onChange={setValue} value={value} renderInput={
+        props => <Input {...props} />
+      }/>
+      <div>{value ? value.toString() : 'empty'}</div>
+    </div>
+  );
+}
+```
