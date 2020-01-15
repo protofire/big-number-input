@@ -28,10 +28,9 @@ Import the component and pass the required props:
 ```typescript
 import React from 'react'
 import { BigNumberInput } from 'big-number-input'
-import { BigNumber } from 'ethers/utils'
 
 function App() {
-  const [value, setValue] = React.useState(new BigNumber(0))
+  const [value, setValue] = React.useState('')
 
   return (
     <div>
@@ -40,7 +39,7 @@ function App() {
         onChange={setValue}
         value={value}
       />
-      <div>{value ? value.toString() : 'empty'}</div>
+      <div>{value || 'empty'}</div>
     </div>
   )
 }
@@ -71,20 +70,46 @@ the `renderInput` prop:
 ```typescript
 import React from 'react';
 import { BigNumberInput } from 'big-number-input'
-import { BigNumber } from 'ethers/utils'
 import { Input } from '@material-ui/core'
 
 
 function App() {
-  const [value, setValue] = React.useState(new BigNumber(0))
+  const [value, setValue] = React.useState('')
 
   return (
     <div>
       <BigNumberInput decimals={6} onChange={setValue} value={value} renderInput={
         props => <Input {...props} />
       }/>
-      <div>{value ? value.toString() : 'empty'}</div>
+      <div>{value || 'empty'}</div>
     </div>
   );
 }
 ```
+
+### Converting to and from a big number
+
+If you want to use some big number library to store your value, you can follow an approach like this:
+
+```typescript
+import React from "react";
+import Big from 'big.js'
+import { BigNumberInput } from "big-number-input";
+
+function App() {
+  const [value, setValue] = React.useState(null);
+  return (
+    <div>
+      <BigNumberInput
+        autofocus={true}
+        decimals={6}
+        onChange={newValue => newValue ? setValue(new Big(newValue)) : setValue(null)}
+        value={value ? value.toString() : ''}
+      />
+      <div>{value ? value.toString() : "empty"}</div>
+    </div>
+  );
+}
+```
+
+Here we use `null` to indicate an empty input, and a big number instance when there is something entered in the input.

@@ -1,19 +1,19 @@
 import * as React from 'react'
-import { BigNumber, formatUnits, parseUnits } from 'ethers/utils'
+import { formatUnits, parseUnits } from '@ethersproject/units'
+import { BigNumber } from '@ethersproject/bignumber'
 
-export interface BigNumberInputProps {
+export type BigNumberInputProps = {
   decimals: number
-  value: BigNumber | null
-  onChange: (value: BigNumber | null) => void
+  value: string
+  onChange: (value: string) => void
   renderInput?: (props: React.HTMLProps<HTMLInputElement>) => React.ReactElement
   autofocus?: boolean
   placeholder?: string
-  max?: BigNumber
-  min?: BigNumber
-  step?: BigNumber
+  max?: string
+  min?: string
 }
 
-export const BigNumberInput = ({
+export function BigNumberInput({
   decimals,
   value,
   onChange,
@@ -22,8 +22,8 @@ export const BigNumberInput = ({
   placeholder = '0.00',
   max,
   min,
-  step,
-}: BigNumberInputProps) => {
+}: BigNumberInputProps) {
+  debugger
   const [currentValue, setCurrentValue] = React.useState('')
 
   const inputRef = React.useRef<any>(null)
@@ -48,36 +48,37 @@ export const BigNumberInput = ({
   const updateValue = (event: React.ChangeEvent<HTMLInputElement>) => {
     const { value } = event.currentTarget
 
-    if (!value) {
-      onChange(null)
+    if (value === '') {
+      onChange(value)
       setCurrentValue('')
       return
     }
 
-    const newValue = parseUnits(value, decimals)
+    let newValue: BigNumber
+    try {
+      newValue = parseUnits(value, decimals)
+    } catch (e) {
+      // don't update the input on invalid values
+      return
+    }
     const invalidValue = (min && newValue.lt(min)) || (max && newValue.gt(max))
 
     if (invalidValue) {
       return
     }
 
-    onChange(newValue)
+    onChange(newValue.toString())
 
     setCurrentValue(value)
   }
 
-  const currentStep = step && formatUnits(step, decimals)
-  const currentMin = min && formatUnits(min, decimals)
-  const currentMax = max && formatUnits(max, decimals)
-
-  return renderInput({
+  const inputProps = {
     placeholder,
     onChange: updateValue,
     value: currentValue,
-    max: currentMax,
-    min: currentMin,
-    step: currentStep,
-    type: 'number',
+    type: 'text',
     ref: inputRef,
-  })
+  }
+
+  return <input {...inputProps} />
 }

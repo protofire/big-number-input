@@ -1,17 +1,16 @@
 /* eslint-env jest */
 import '@testing-library/jest-dom/extend-expect'
 import { render, fireEvent } from '@testing-library/react'
-import { BigNumber } from 'ethers/utils'
 import React from 'react'
 
-import { BigNumberInput, BigNumberRenderProps } from '../src/index'
+import { BigNumberInput } from '../src/index'
 
 const noop = () => ({})
 
 const defaultProps = {
-  value: new BigNumber('123'),
+  placeholder: 'Value',
+  value: '123',
   decimals: 2,
-  renderInput: (props: BigNumberRenderProps) => <input {...props} />,
 }
 
 const renderBigNumberInput = props => render(<BigNumberInput {...defaultProps} {...props} />)
@@ -36,7 +35,7 @@ test('should be initialized with value', () => {
 test('should trigger the onChange callback with the proper value', async () => {
   // given
   const changeHandler = jest.fn()
-  const expectedValue = new BigNumber('230')
+  const expectedValue = '230'
 
   // when
   const { container } = renderBigNumberInput({ onChange: changeHandler })
@@ -53,13 +52,13 @@ test('should change when value changes', async () => {
   const changeHandler = jest.fn()
 
   const firstChildOne = renderBigNumberInput({
-    value: new BigNumber('123'),
+    value: '123',
     onChange: changeHandler,
   }).container.firstChild
   expect(firstChildOne && firstChildOne['value']).toEqual('1.23')
 
   const firstChildTwo = renderBigNumberInput({
-    value: new BigNumber('321'),
+    value: '321',
     onChange: changeHandler,
   }).container.firstChild
   expect(firstChildTwo && firstChildTwo['value']).toEqual('3.21')
@@ -77,13 +76,13 @@ test('should allow entering an empty string', async () => {
   expect(input).not.toBe(null)
   fireEvent.change(input, { target: { value: '' } })
   expect(changeHandler).toHaveBeenCalledTimes(1)
-  expect(changeHandler).toHaveBeenCalledWith(null)
+  expect(changeHandler).toHaveBeenCalledWith('')
 })
 
 test('should accept a min value', async () => {
   // given
   const changeHandler = jest.fn()
-  const minValue = new BigNumber('100')
+  const minValue = '100'
   const expectedValue = '1.23'
 
   // when
@@ -100,7 +99,7 @@ test('should accept a min value', async () => {
 test('should accept a max value', async () => {
   // given
   const changeHandler = jest.fn()
-  const maxValue = new BigNumber('200')
+  const maxValue = '200'
   const expectedValue = '1.23'
 
   // when
