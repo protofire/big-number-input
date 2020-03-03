@@ -61,7 +61,8 @@ export function BigNumberInput({
       // don't update the input on invalid values
       return
     }
-    const invalidValue = (min && newValue.lt(parsedMin)) || (max && newValue.gt(parsedMax))
+    const invalidValue =
+      (parsedMin && newValue.lt(parsedMin)) || (parsedMax && newValue.gt(parsedMax))
 
     if (invalidValue) {
       return
