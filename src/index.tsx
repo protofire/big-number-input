@@ -1,5 +1,5 @@
 import * as React from 'react'
-import { formatUnits, parseUnits } from '@ethersproject/units'
+import { parseUnits } from '@ethersproject/units'
 import { BigNumber } from '@ethersproject/bignumber'
 
 export type BigNumberInputProps = {
@@ -17,67 +17,66 @@ export function BigNumberInput({
   decimals,
   value,
   onChange,
-  renderInput = props => <input {...props} />,
+  renderInput,
   autofocus,
   placeholder = '0.00',
   max,
   min,
 }: BigNumberInputProps) {
-  const [currentValue, setCurrentValue] = React.useState('')
-
   const inputRef = React.useRef<any>(null)
+  const [parsedMin, setParsedMin] = React.useState()
+  const [parsedMax, setParsedMax] = React.useState()
 
-  // update current value
+  const defaultRenderInput = props => <input {...props} />
+
   React.useEffect(() => {
-    if (!value) {
-      setCurrentValue('')
-    } else if (!parseUnits(currentValue || '0', decimals).eq(value)) {
-      setCurrentValue(formatUnits(value, decimals))
+    if (min) {
+      setParsedMin(parseUnits(min, decimals))
     }
-  }, [value, decimals, currentValue])
+    if (max) {
+      setParsedMax(parseUnits(max, decimals))
+    }
+  }, [min, max])
 
-  // autofocus
+  // autofocus (only for default Input)
   React.useEffect(() => {
-    if (autofocus && inputRef) {
+    if (!renderInput && autofocus && inputRef) {
       const node = inputRef.current as HTMLInputElement
       node.focus()
     }
   }, [autofocus, inputRef])
 
   const updateValue = (event: React.ChangeEvent<HTMLInputElement>) => {
-    const { value } = event.currentTarget
+    const { value: localValue } = event.currentTarget
 
-    if (value === '') {
-      onChange(value)
-      setCurrentValue('')
+    if (localValue === '') {
+      onChange(localValue)
       return
     }
 
     let newValue: BigNumber
     try {
-      newValue = parseUnits(value, decimals)
+      newValue = parseUnits(localValue, decimals)
     } catch (e) {
       // don't update the input on invalid values
       return
     }
-    const invalidValue = (min && newValue.lt(min)) || (max && newValue.gt(max))
+    const invalidValue = (min && newValue.lt(parsedMin)) || (max && newValue.gt(parsedMax))
 
     if (invalidValue) {
       return
     }
 
     onChange(newValue.toString())
-
-    setCurrentValue(value)
   }
 
   const inputProps = {
     placeholder,
     onChange: updateValue,
-    value: currentValue,
     type: 'text',
+    value,
     ref: inputRef,
   }
 
-  return renderInput({ ...inputProps })
+  return renderInput ? renderInput({ ...inputProps }) : defaultRenderInput({ ...inputProps })
 }
