@@ -23,7 +23,6 @@ export function BigNumberInput({
   max,
   min,
 }: BigNumberInputProps) {
-  debugger
   const [currentValue, setCurrentValue] = React.useState('')
 
   const inputRef = React.useRef<any>(null)
@@ -80,5 +79,5 @@ export function BigNumberInput({
     ref: inputRef,
   }
 
-  return <input {...inputProps} />
+  return renderInput({ ...inputProps })
 }
