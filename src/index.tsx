@@ -1,10 +1,10 @@
 import * as React from 'react'
-import { parseUnits } from '@ethersproject/units'
+import { formatUnits, parseUnits } from '@ethersproject/units'
 import { BigNumber } from '@ethersproject/bignumber'
 
 export type BigNumberInputProps = {
   decimals: number
-  value: string
+  initialValue: string
   onChange: (value: string) => void
   renderInput?: (props: React.HTMLProps<HTMLInputElement>) => React.ReactElement
   autofocus?: boolean
@@ -15,7 +15,7 @@ export type BigNumberInputProps = {
 
 export function BigNumberInput({
   decimals,
-  value,
+  initialValue,
   onChange,
   renderInput,
   autofocus,
@@ -24,8 +24,15 @@ export function BigNumberInput({
   min,
 }: BigNumberInputProps) {
   const inputRef = React.useRef<any>(null)
+
+  const [inputValue, setInputvalue] = React.useState('')
   const [parsedMin, setParsedMin] = React.useState<BigNumber | null>()
   const [parsedMax, setParsedMax] = React.useState<BigNumber | null>()
+
+  // update current value
+  React.useEffect(() => {
+    setInputvalue(formatUnits(initialValue, decimals))
+  }, [initialValue, decimals, inputValue])
 
   const defaultRenderInput = props => <input {...props} />
 
@@ -47,16 +54,16 @@ export function BigNumberInput({
   }, [autofocus, inputRef])
 
   const updateValue = (event: React.ChangeEvent<HTMLInputElement>) => {
-    const { value: localValue } = event.currentTarget
+    const { value } = event.currentTarget
 
-    if (localValue === '') {
-      onChange(localValue)
+    if (value === '') {
+      setInputvalue(value)
       return
     }
 
     let newValue: BigNumber
     try {
-      newValue = parseUnits(localValue, decimals)
+      newValue = parseUnits(value, decimals)
     } catch (e) {
       // don't update the input on invalid values
       return
@@ -70,6 +77,7 @@ export function BigNumberInput({
       return
     }
 
+    setInputvalue(formatUnits(value, decimals))
     onChange(newValue.toString())
   }
 
@@ -77,9 +85,10 @@ export function BigNumberInput({
     placeholder,
     onChange: updateValue,
     type: 'text',
-    value,
-    ref: inputRef,
+    value: inputValue,
   }
 
-  return renderInput ? renderInput({ ...inputProps }) : defaultRenderInput({ ...inputProps })
+  return renderInput
+    ? renderInput({ ...inputProps })
+    : defaultRenderInput({ ...inputProps, ref: inputRef })
 }
