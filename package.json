@@ -16,7 +16,7 @@
     "eslint:fix": "eslint --fix . --ext .ts",
     "prettier": "prettier --write \"**/*.{ts,tsx,json}\"",
     "prettier-check": "prettier --check \"**/*.{ts,tsx,json}\"",
-    "prepublish": "npm run build"
+    "prepare": "npm run build"
   },
   "peerDependencies": {
     "react": ">=16.8.0",
