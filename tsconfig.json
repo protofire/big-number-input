@@ -9,6 +9,6 @@
     "strictNullChecks": true,
     "esModuleInterop": true
   },
-  "include": ["src"],
+  "include": ["src", "src/types/**/*"],
   "exclude": ["node_modules", "lib"]
 }
