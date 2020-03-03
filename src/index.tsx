@@ -4,7 +4,7 @@ import { BigNumber } from '@ethersproject/bignumber'
 
 export type BigNumberInputProps = {
   decimals: number
-  initialValue: string
+  value: string
   onChange: (value: string) => void
   renderInput?: (props: React.HTMLProps<HTMLInputElement>) => React.ReactElement
   autofocus?: boolean
@@ -15,7 +15,7 @@ export type BigNumberInputProps = {
 
 export function BigNumberInput({
   decimals,
-  initialValue,
+  value,
   onChange,
   renderInput,
   autofocus,
@@ -26,26 +26,16 @@ export function BigNumberInput({
   const inputRef = React.useRef<any>(null)
 
   const [inputValue, setInputvalue] = React.useState('')
-  const [parsedMin, setParsedMin] = React.useState<BigNumber | null>()
-  const [parsedMax, setParsedMax] = React.useState<BigNumber | null>()
 
   // update current value
   React.useEffect(() => {
-    setInputvalue(formatUnits(initialValue, decimals))
-  }, [initialValue, decimals, inputValue])
-
-  const defaultRenderInput = props => <input {...props} />
-
-  React.useEffect(() => {
-    if (min) {
-      setParsedMin(parseUnits(min, decimals))
+    if (!value) {
+      setInputvalue('')
+    } else if (!parseUnits(inputValue || '0', decimals).eq(value)) {
+      setInputvalue(formatUnits(value, decimals))
     }
-    if (max) {
-      setParsedMax(parseUnits(max, decimals))
-    }
-  }, [min, max])
+  }, [value, decimals, inputValue])
 
-  // autofocus (only for default Input)
   React.useEffect(() => {
     if (!renderInput && autofocus && inputRef) {
       const node = inputRef.current as HTMLInputElement
@@ -57,6 +47,7 @@ export function BigNumberInput({
     const { value } = event.currentTarget
 
     if (value === '') {
+      onChange(value)
       setInputvalue(value)
       return
     }
@@ -69,15 +60,12 @@ export function BigNumberInput({
       return
     }
 
-    if (parsedMin && newValue.lt(parsedMin)) {
+    const invalidValue = (min && newValue.lt(min)) || (max && newValue.gt(max))
+    if (invalidValue) {
       return
     }
 
-    if (parsedMax && newValue.lt(parsedMax)) {
-      return
-    }
-
-    setInputvalue(formatUnits(value, decimals))
+    setInputvalue(value)
     onChange(newValue.toString())
   }
 
@@ -88,7 +76,5 @@ export function BigNumberInput({
     value: inputValue,
   }
 
-  return renderInput
-    ? renderInput({ ...inputProps })
-    : defaultRenderInput({ ...inputProps, ref: inputRef })
+  return renderInput ? renderInput({ ...inputProps }) : <input {...inputProps} ref={inputRef} />
 }
