@@ -24,8 +24,8 @@ export function BigNumberInput({
   min,
 }: BigNumberInputProps) {
   const inputRef = React.useRef<any>(null)
-  const [parsedMin, setParsedMin] = React.useState()
-  const [parsedMax, setParsedMax] = React.useState()
+  const [parsedMin, setParsedMin] = React.useState<BigNumber | null>()
+  const [parsedMax, setParsedMax] = React.useState<BigNumber | null>()
 
   const defaultRenderInput = props => <input {...props} />
 
@@ -62,11 +62,11 @@ export function BigNumberInput({
       return
     }
 
-    if (!parsedMin || newValue.lt(parsedMin)) {
+    if (parsedMin && newValue.lt(parsedMin)) {
       return
     }
 
-    if (!parsedMax || newValue.lt(parsedMax)) {
+    if (parsedMax && newValue.lt(parsedMax)) {
       return
     }
 
