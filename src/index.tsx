@@ -1,47 +1,43 @@
 import * as React from 'react'
-import { BigNumber, formatUnits, parseUnits } from 'ethers/utils'
+import { formatUnits, parseUnits } from '@ethersproject/units'
+import { BigNumber } from '@ethersproject/bignumber'
 
-export interface BigNumberInputProps {
+export type BigNumberInputProps = {
   decimals: number
-  onChange: (value: BigNumber | null) => void
-  value: BigNumber | null
+  value: string
+  onChange: (value: string) => void
+  renderInput?: (props: React.HTMLProps<HTMLInputElement>) => React.ReactElement
   autofocus?: boolean
-  className?: string
   placeholder?: string
-  max?: BigNumber
-  min?: BigNumber
-  step?: BigNumber
-  disabled?: boolean
+  max?: string
+  min?: string
 }
 
-export const BigNumberInput = (props: BigNumberInputProps) => {
-  const {
-    placeholder = '0.00',
-    autofocus = false,
-    value,
-    decimals,
-    step,
-    min,
-    max,
-    className,
-    disabled = false,
-    onChange,
-  } = props
+export function BigNumberInput({
+  decimals,
+  value,
+  onChange,
+  renderInput,
+  autofocus,
+  placeholder = '0.00',
+  max,
+  min,
+}: BigNumberInputProps) {
+  const inputRef = React.useRef<any>(null)
 
-  const [currentValue, setCurrentValue] = React.useState('')
+  const [inputValue, setInputvalue] = React.useState('')
 
-  const inputRef = React.useRef<HTMLInputElement>(null)
-
+  // update current value
   React.useEffect(() => {
     if (!value) {
-      setCurrentValue('')
-    } else if (!parseUnits(currentValue || '0', decimals).eq(value)) {
-      setCurrentValue(formatUnits(value, decimals))
+      setInputvalue('')
+    } else if (!parseUnits(inputValue || '0', decimals).eq(value)) {
+      setInputvalue(formatUnits(value, decimals))
     }
-  }, [value, decimals, currentValue])
+  }, [value, decimals, inputValue])
 
   React.useEffect(() => {
-    if (autofocus && inputRef) {
+    if (!renderInput && autofocus && inputRef) {
       const node = inputRef.current as HTMLInputElement
       node.focus()
     }
@@ -50,40 +46,35 @@ export const BigNumberInput = (props: BigNumberInputProps) => {
   const updateValue = (event: React.ChangeEvent<HTMLInputElement>) => {
     const { value } = event.currentTarget
 
-    if (!value) {
-      onChange(null)
-      setCurrentValue('')
+    if (value === '') {
+      onChange(value)
+      setInputvalue(value)
       return
     }
 
-    const newValue = parseUnits(value, decimals)
-    const invalidValue = (min && newValue.lt(min)) || (max && newValue.gt(max))
+    let newValue: BigNumber
+    try {
+      newValue = parseUnits(value, decimals)
+    } catch (e) {
+      // don't update the input on invalid values
+      return
+    }
 
+    const invalidValue = (min && newValue.lt(min)) || (max && newValue.gt(max))
     if (invalidValue) {
       return
     }
 
-    onChange(newValue)
-
-    setCurrentValue(value)
+    setInputvalue(value)
+    onChange(newValue.toString())
   }
 
-  const currentStep = step && formatUnits(step, decimals)
-  const currentMin = min && formatUnits(min, decimals)
-  const currentMax = max && formatUnits(max, decimals)
+  const inputProps = {
+    placeholder,
+    onChange: updateValue,
+    type: 'text',
+    value: inputValue,
+  }
 
-  return (
-    <input
-      className={className}
-      max={currentMax}
-      min={currentMin}
-      onChange={updateValue}
-      ref={inputRef}
-      step={currentStep}
-      type={'number'}
-      value={currentValue}
-      placeholder={placeholder}
-      disabled={disabled}
-    />
-  )
+  return renderInput ? renderInput({ ...inputProps }) : <input {...inputProps} ref={inputRef} />
 }

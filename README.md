@@ -26,29 +26,35 @@ npm install big-number-input
 Import the component and pass the required props:
 
 ```typescript
-import React from 'react';
+import React from 'react'
 import { BigNumberInput } from 'big-number-input'
-import { BigNumber } from 'ethers/utils'
-
 
 function App() {
-  const [value, setValue] = React.useState(new BigNumber(0))
+  const [value, setValue] = React.useState('1000000')
+
   return (
     <div>
-      <BigNumberInput decimals={6} onChange={setValue} value={value} />
-      <div>{value ? value.toString() : 'empty'}</div>
+      <BigNumberInput
+        decimals={6}
+        onChange={setValue}
+        value={value}
+      />
+      <div>{value || 'empty'}</div>
     </div>
-  );
+  )
 }
 
-export default App;
+export default App
 ```
+
+In this case the input value is 1000000 and the rendered value will be 1. If the user changes it to 2 in the UI the onChange will be called with 2000000.
+
 
 The required props are:
 
-- `decimals`: The number of decimals you want to use, or `null` if you want the input to start empty
-- `value`: The BigNumber value that will be used by the input
-- `onChange`: A function that receives the new BigNumber value, or `null` when the input is empty
+- `decimals`: The number of decimals you want to use
+- `value`: A string with the raw value that will be used by the input, eg. 1000000.
+- `onChange`: A function that receives the new raw value, or an empty string when the input is empty
 
 Then you have a bunch of optional props you can use:
 
@@ -56,5 +62,56 @@ Then you have a bunch of optional props you can use:
 - `placeholder`: A string to use as the input's placeholder
 - `disabled`: A boolean used to disable the input
 - `min`, `max` and `step`: The min and max values you want to use and the step used when you increase or decrease the
-  number with the arrow keys or by clicking the arrows in the input. These values are also BigNumbers and are
-  interpreted with the same number of decimals as the main value.
+  number with the arrow keys or by clicking the arrows in the input. These values are also strings with the raw values and are interpreted with the same number of decimals as the main value.
+
+### Using a different input component
+
+If you want to use a different input, for example the `Input` from [Material UI](https://material-ui.com/), you can use
+the `renderInput` prop:
+
+```typescript
+import React from 'react';
+import { BigNumberInput } from 'big-number-input'
+import { Input } from '@material-ui/core'
+
+
+function App() {
+  const [value, setValue] = React.useState('')
+
+  return (
+    <div>
+      <BigNumberInput decimals={6} onChange={setValue} value={value} renderInput={
+        props => <Input {...props} />
+      }/>
+      <div>{value || 'empty'}</div>
+    </div>
+  );
+}
+```
+
+### Converting to and from a big number
+
+If you want to use some big number library to store your value, you can follow an approach like this:
+
+```typescript
+import React from "react";
+import Big from 'big.js'
+import { BigNumberInput } from "big-number-input";
+
+function App() {
+  const [value, setValue] = React.useState(null);
+  return (
+    <div>
+      <BigNumberInput
+        autofocus={true}
+        decimals={6}
+        onChange={newValue => newValue ? setValue(new Big(newValue)) : setValue(null)}
+        value={value ? value.toString() : ''}
+      />
+      <div>{value ? value.toString() : "empty"}</div>
+    </div>
+  );
+}
+```
+
+Here we use `null` to indicate an empty input, and a big number instance when there is something entered in the input.

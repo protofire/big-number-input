@@ -3,8 +3,8 @@
 exports[`should work with minimal props 1`] = `
 <DocumentFragment>
   <input
-    placeholder="0.00"
-    type="number"
+    placeholder="Value"
+    type="text"
     value="1.23"
   />
 </DocumentFragment>
