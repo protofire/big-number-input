@@ -29,7 +29,7 @@ Import the component and pass the required props:
 import React from 'react'
 import { BigNumberInput } from 'big-number-input'
 
-function App() {  
+function App() {
   const [value, setValue] = React.useState('1000000')
 
   return (
@@ -47,14 +47,14 @@ function App() {
 export default App
 ```
 
-* In this case the input value is 1000000 and the rendered value will be 1. If the user changes it to 2 in the UI the onChange will be called with 2000000.
+In this case the input value is 1000000 and the rendered value will be 1. If the user changes it to 2 in the UI the onChange will be called with 2000000.
 
 
 The required props are:
 
-- `decimals`: The number of decimals you want to use, or `null` if you want the input to start empty
+- `decimals`: The number of decimals you want to use
 - `value`: A string with the raw value that will be used by the input, eg. 1000000.
-- `onChange`: A function that receives the new raw value, or `null` when the input is empty
+- `onChange`: A function that receives the new raw value, or an empty string when the input is empty
 
 Then you have a bunch of optional props you can use:
 
@@ -62,7 +62,7 @@ Then you have a bunch of optional props you can use:
 - `placeholder`: A string to use as the input's placeholder
 - `disabled`: A boolean used to disable the input
 - `min`, `max` and `step`: The min and max values you want to use and the step used when you increase or decrease the
-  number with the arrow keys or by clicking the arrows in the input. These values are also string with the raw values and are interpreted with the same number of decimals as the main value.
+  number with the arrow keys or by clicking the arrows in the input. These values are also strings with the raw values and are interpreted with the same number of decimals as the main value.
 
 ### Using a different input component
 
