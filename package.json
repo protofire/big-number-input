@@ -1,6 +1,6 @@
 {
   "name": "big-number-input",
-  "version": "1.0.2",
+  "version": "1.0.3",
   "description": "A BigNumberInput to use with decentralized applications and React",
   "main": "lib/index.js",
   "files": [
