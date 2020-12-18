@@ -31,8 +31,18 @@ export function BigNumberInput({
   React.useEffect(() => {
     if (!value) {
       setInputvalue('')
-    } else if (!parseUnits(inputValue || '0', decimals).eq(value)) {
-      setInputvalue(formatUnits(value, decimals))
+    } else {
+      let parseInputValue
+
+      try {
+        parseInputValue = parseUnits(inputValue || '0', decimals)
+      } catch {
+        // do nothing
+      }
+
+      if (!parseInputValue || !parseInputValue.eq(value)) {
+        setInputvalue(formatUnits(value, decimals))
+      }
     }
   }, [value, decimals, inputValue])
 
